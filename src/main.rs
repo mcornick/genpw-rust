@@ -19,11 +19,10 @@ use std::env;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-    let length;
-    if args.len() > 1 {
-        length = args[1].parse().unwrap_or(16);
+    let length = if args.len() > 1 {
+        args[1].parse().unwrap_or(16)
     } else {
-        length = 16;
+        16
     };
     if length < 1 {
         panic!("length must be an integer greater than 0")
