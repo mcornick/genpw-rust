@@ -37,6 +37,7 @@ fn main() {
     let mut password = vec![""; length];
     let mut rng = rand::thread_rng();
 
+    #[allow(clippy::needless_range_loop)]
     for i in 0..length {
         let r = rng.gen_range(0..alphabet.len());
         password[i] = alphabet[r];
