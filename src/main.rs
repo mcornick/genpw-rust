@@ -14,26 +14,76 @@
 // TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 // PERFORMANCE OF THIS SOFTWARE.
 
+extern crate getopts;
+use getopts::Options;
 use rand::Rng;
 use std::env;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-    let length = if args.len() > 1 {
-        args[1].parse().unwrap_or(16)
-    } else {
-        16
+
+    let mut opts = Options::new();
+    opts.optopt("U", "upper", "include uppercase", "true");
+    opts.optopt("u", "lower", "include lowercase", "true");
+    opts.optopt("d", "digit", "include digits", "true");
+    opts.optopt("l", "length", "length to generate", "LENGTH");
+    let matches = match opts.parse(&args[1..]) {
+        Ok(m) => m,
+        Err(f) => {
+            panic!("{}", f.to_string())
+        }
     };
+
+    let mut length: usize = 16;
+    if matches.opt_present("l") {
+        length = matches.opt_str("l").unwrap().parse().unwrap();
+    }
+
     if length < 1 {
         panic!("length must be an integer greater than 0")
     };
 
-    let pool = vec![
+    let uppercase = vec![
         "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R",
-        "S", "T", "U", "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j",
-        "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "0", "1",
-        "2", "3", "4", "5", "6", "7", "8", "9",
+        "S", "T", "U", "V", "W", "X", "Y", "Z",
     ];
+    let lowercase = vec![
+        "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r",
+        "s", "t", "u", "v", "w", "x", "y", "z",
+    ];
+    let digits = vec!["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+
+    let mut pool: Vec<&str> = Vec::new();
+
+    // FIXME: these really should be booleans if getopts can handle the default being true
+    if matches.opt_present("U") {
+        if matches.opt_str("U").unwrap().to_lowercase() != "false" {
+            pool.extend(&uppercase);
+        }
+    } else {
+        pool.extend(&uppercase);
+    }
+
+    if matches.opt_present("u") {
+        if matches.opt_str("u").unwrap().to_lowercase() != "false" {
+            pool.extend(&lowercase);
+        }
+    } else {
+        pool.extend(&lowercase);
+    }
+
+    if matches.opt_present("d") {
+        if matches.opt_str("d").unwrap().to_lowercase() != "false" {
+            pool.extend(&digits);
+        }
+    } else {
+        pool.extend(&digits);
+    }
+    
+    if pool.is_empty() {
+        panic!("pool is empty");
+    }
+
     let mut alphabet = Vec::new();
     let repeats = (length / pool.len()) + 1;
     (0..repeats).for_each(|_| {
