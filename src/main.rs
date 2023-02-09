@@ -28,18 +28,25 @@ fn main() {
         panic!("length must be an integer greater than 0")
     };
 
-    let alphabet = [
+    let pool = vec![
         "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R",
         "S", "T", "U", "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j",
         "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "0", "1",
         "2", "3", "4", "5", "6", "7", "8", "9",
     ];
+    let mut alphabet = Vec::new();
+    let repeats = (length / pool.len()) + 1;
+    (0..repeats).for_each(|_| {
+        alphabet.extend(&pool);
+    });
+
     let mut password = vec![""; length];
     let mut rng = rand::thread_rng();
 
     (0..length).for_each(|i| {
         let r = rng.gen_range(0..alphabet.len());
         password[i] = alphabet[r];
+        alphabet.remove(r);
     });
     println!("{}", password.join(""));
 }
