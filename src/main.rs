@@ -66,7 +66,8 @@ fn main() {
     }
 
     if matches.opt_present("u") {
-        if matches.opt_str("u").unwrap().to_lowercase() != "false" {
+        let value: bool = matches.opt_str("u").unwrap().parse().unwrap_or(true);
+        if value {
             pool.extend(&lowercase);
         }
     } else {
@@ -74,7 +75,8 @@ fn main() {
     }
 
     if matches.opt_present("d") {
-        if matches.opt_str("d").unwrap().to_lowercase() != "false" {
+        let value: bool = matches.opt_str("d").unwrap().parse().unwrap_or(true);
+        if value {
             pool.extend(&digits);
         }
     } else {
