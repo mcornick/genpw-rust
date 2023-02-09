@@ -57,7 +57,8 @@ fn main() {
 
     // FIXME: these really should be booleans if getopts can handle the default being true
     if matches.opt_present("U") {
-        if matches.opt_str("U").unwrap().to_lowercase() != "false" {
+        let value: bool = matches.opt_str("U").unwrap().parse().unwrap_or(true);
+        if value {
             pool.extend(&uppercase);
         }
     } else {
