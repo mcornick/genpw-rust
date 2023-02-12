@@ -55,34 +55,57 @@ fn main() {
 
     let mut pool: Vec<&str> = Vec::new();
 
-    // FIXME: these really should be booleans if getopts can handle the default being true
-    if matches.opt_present("U") {
-        let value: bool = matches.opt_str("U").unwrap().parse().unwrap_or(true);
-        if value {
+    match matches.opt_present("U") {
+        true => {
+            if matches
+                .opt_str("U")
+                .unwrap()
+                .to_lowercase()
+                .parse()
+                .unwrap_or(true)
+            {
+                pool.extend(&uppercase);
+            }
+        }
+        false => {
             pool.extend(&uppercase);
         }
-    } else {
-        pool.extend(&uppercase);
     }
 
-    if matches.opt_present("u") {
-        let value: bool = matches.opt_str("u").unwrap().parse().unwrap_or(true);
-        if value {
+    match matches.opt_present("u") {
+        true => {
+            if matches
+                .opt_str("u")
+                .unwrap()
+                .to_lowercase()
+                .parse()
+                .unwrap_or(true)
+            {
+                pool.extend(&lowercase);
+            }
+        }
+        false => {
             pool.extend(&lowercase);
         }
-    } else {
-        pool.extend(&lowercase);
     }
 
-    if matches.opt_present("d") {
-        let value: bool = matches.opt_str("d").unwrap().parse().unwrap_or(true);
-        if value {
+    match matches.opt_present("d") {
+        true => {
+            if matches
+                .opt_str("d")
+                .unwrap()
+                .to_lowercase()
+                .parse()
+                .unwrap_or(true)
+            {
+                pool.extend(&digits);
+            }
+        }
+        false => {
             pool.extend(&digits);
         }
-    } else {
-        pool.extend(&digits);
     }
-    
+
     if pool.is_empty() {
         panic!("pool is empty");
     }
